@@ -2,8 +2,7 @@
 <html lang="en">
 <title>TITLE HERE</title>
 <meta charset="UTF-8">
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<!-- For Release <script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
@@ -34,6 +33,10 @@
 
 <body>
 
+<!--Empty Div to load Vue.js -->
+<div id="app"></div>
+
+
   <!-- Navbar -->
   <div class="w3-top">
     <div class="w3-bar w3-black w3-card w3-large">
@@ -44,7 +47,7 @@
 
   </div>
 
-  <!-- Header -->
+  <!-- Top Container -->
   <header class="w3-container w3-red w3-center" style="padding:128px 16px">
     <button class="w3-button w3-black w3-padding-large w3-large w3-margin-top">Upload File(s)</button>
   </header>
@@ -59,6 +62,9 @@
     </div>
     <p>Developed By Daniel Batchford</p>
   </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<!-- For Release <script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
 
   <script>
     var app = new Vue({
