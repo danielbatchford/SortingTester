@@ -12,3 +12,21 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+
+client/.DS_Store
+client/node_modules
+client/dist
+
+# local env files
+client/env.local
+client/env.*.local
+
+# Log files
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/pnpm-debug.log*
+
+# Editor directories and files
+client/.idea
