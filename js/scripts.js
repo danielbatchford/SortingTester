@@ -7,15 +7,17 @@ window.onclick = function(event) {
 function showModal() {
   document.getElementById('modal').style.display = "block";
 }
+
 //Called when clicking visual button. Adds FileReader event listener and clicks hidden html file button
 function openAttachment() {
   document.getElementById('attachment').addEventListener('change', readFile, false);
   document.getElementById('attachment').click();
 }
 
-//Displays the file input and test button.
+//Displays the file input on button
 function fileSelected(input) {
   document.getElementById('btnAttachment').innerHTML = input.files[0].name;
+
 }
 
 //Read From a file and display the interpreted result
@@ -28,7 +30,7 @@ function readFile(evt) {
     r.onload = function(e) {
       var stringData = e.target.result;
 
-      document.getElementById('readResultContainer').style.display = "block";
+      document.getElementById('readContainer').style.display = "block";
 
 
       data = stringData.replace(/\D/g, ' ').replace(/\s\s+/g, ' ').split(' ').map(Number); //Clean up this regex, work with neg numbers
@@ -125,7 +127,7 @@ function mergeSort(dataOrig, timeStarted) {
 
 function selectionSort(dataOrig, timeStarted) {
   var data = dataOrig.slice();
-  console.log(data);
+
   var length = data.length;
 
   for (var i = 0; i < length; i++) {
@@ -142,6 +144,6 @@ function selectionSort(dataOrig, timeStarted) {
     }
 
   }
-  console.log(data);
+
   return timeFormat(performance.now() - timeStarted);
 }
