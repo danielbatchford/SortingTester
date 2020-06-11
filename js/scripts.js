@@ -1,11 +1,10 @@
-
 window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-    
-function showModal(){
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+function showModal() {
   document.getElementById('modal').style.display = "block";
 }
 //Called when clicking visual button. Adds FileReader event listener and clicks hidden html file button
@@ -46,7 +45,7 @@ function readFile(evt) {
       }
 
       document.getElementById("readResult").innerHTML = stringToDisplay;
-      document.getElementById("fileInfo").innerHTML = "Found " + data.length +" Elements. Your input was interpreted as:";
+      document.getElementById("fileInfo").innerHTML = "Found " + data.length + " Elements. Your input was interpreted as:";
       tableBuilder(data);
     }
     r.readAsText(f);
@@ -58,25 +57,28 @@ function readFile(evt) {
 }
 
 function tableBuilder(data) {
-    document.getElementById('tableContainer').style.display = "block";
-    document.getElementById("table").rows[1].cells[3].innerHTML = quickSort(data,performance.now());
-    document.getElementById("table").rows[2].cells[3].innerHTML = mergeSort(data,performance.now());
-    document.getElementById("table").rows[3].cells[3].innerHTML = bubbleSort(data,performance.now());
-    document.getElementById("table").rows[4].cells[3].innerHTML = selectionSort(data,performance.now());
-  document.getElementById("table").rows[5].cells[3].innerHTML = insertionSort(data,performance.now());
 
-  console.log(insertionSort(data, performance.now()));
+  document.getElementById('tableContainer').style.display = "block";
+ document.getElementById("table").rows[1].cells[3].innerHTML = quickSort(data, performance.now());
+  document.getElementById("table").rows[2].cells[3].innerHTML = mergeSort(data, performance.now());
+  document.getElementById("table").rows[3].cells[3].innerHTML = bubbleSort(data, performance.now());
+  document.getElementById("table").rows[4].cells[3].innerHTML = selectionSort(data, performance.now());
+  document.getElementById("table").rows[5].cells[3].innerHTML = insertionSort(data, performance.now());
+
 }
 
-function timeFormat(input){
-  if(input > 1){
-    return input.toFixed(1)+" ms";
+function timeFormat(input) {
+  if(input > 100){
+    return (input/1000).toFixed(1) + " s";
   }
-  return (input*1000).toFixed(1)+" ns";
+  if (input > 1) {
+    return input.toFixed(1) + " ms";
+  }
+  return (input * 1000).toFixed(1) + " ns";
 }
 
-function bubbleSort(data, timeStarted) {
-
+function bubbleSort(dataOrig, timeStarted) {
+  var data = dataOrig.slice();
   var length = data.length;
   var swapped = true;
   while (swapped) {
@@ -94,31 +96,52 @@ function bubbleSort(data, timeStarted) {
   return timeFormat(performance.now() - timeStarted);
 }
 
-function quickSort(data, timeStarted) {
-    return timeFormat(performance.now() - timeStarted);
+function quickSort(dataOrig, timeStarted) {
+  var data = dataOrig.slice();
+  return timeFormat(performance.now() - timeStarted);
 }
 
-function insertionSort(data, timeStarted) {
-
+function insertionSort(dataOrig, timeStarted) {
+var data = dataOrig.slice();
   var length = data.length;
 
-  for(var i = 1; i < length; i++){
+  for (var i = 1; i < length; i++) {
     var key = data[i];
-    var j = i-1;
-    while(j >= 0 && data[j] > key){
-      data[j+1] = data[j];
+    var j = i - 1;
+    while (j >= 0 && data[j] > key) {
+      data[j + 1] = data[j];
       j--;
     }
-      data[j+1] = key;
+    data[j + 1] = key;
   }
 
-    return timeFormat(performance.now() - timeStarted);
+  return timeFormat(performance.now() - timeStarted);
 }
 
-function mergeSort(data, timeStarted) {
-    return timeFormat(performance.now() - timeStarted);
+function mergeSort(dataOrig, timeStarted) {
+  var data = dataOrig.slice();
+  return timeFormat(performance.now() - timeStarted);
 }
 
-function selectionSort(data, timeStarted) {
-    return timeFormat(performance.now() - timeStarted);
+function selectionSort(dataOrig, timeStarted) {
+  var data = dataOrig.slice();
+  console.log(data);
+  var length = data.length;
+
+  for (var i = 0; i < length; i++) {
+    var min = i;
+    for (var j = i + 1; j < length; j++) {
+      if (data[min] > data[j]) {
+        min = j;
+      }
+    }
+    if (min != i) {
+      var tmp = data[i];
+      data[i] = data[min];
+      data[min] = tmp;
+    }
+
+  }
+  console.log(data);
+  return timeFormat(performance.now() - timeStarted);
 }
