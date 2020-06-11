@@ -43,7 +43,7 @@ function readFile(evt) {
         stringToDisplay += data[i] + ", ";
       }
       if (data.length > maxToDisplay) {
-        stringToDisplay += " ...";
+        stringToDisplay += " .....";
       }
 
       document.getElementById("readResult").innerHTML = stringToDisplay;
@@ -100,8 +100,22 @@ function bubbleSort(dataOrig, timeStarted) {
 
 function quickSort(dataOrig, timeStarted) {
   var data = dataOrig.slice();
+
+  console.log(data);
+  internalQuickSort(0,data.length);
+
+  console.log(data);
   return timeFormat(performance.now() - timeStarted);
 }
+
+function internalQuickSort(data, low, high){
+  if(low < high){
+    partIndex = partition(data, low, high);
+
+    internalQuickSort(data, low, partIndex-1);
+    internalQuickSort(data, partIndex+1,high);
+  }
+} //Not done yet
 
 function insertionSort(dataOrig, timeStarted) {
 var data = dataOrig.slice();
