@@ -22,12 +22,18 @@ function readFile(evt) {
       document.getElementById('readInfo').style.display = "block";
       document.getElementById('tableContainer').style.display = "block";
 
-        stringData = stringData.replace(/[^\d.-]/g, ' ');
-        document.getElementById("readResult").innerHTML = stringData;
+      stringData = stringData.replace(/\D/g, ' ').replace(/\s\s+/g, ' '); //Clean up this regex
+      document.getElementById("readResult").innerHTML = stringData;
+      tableBuilder(stringData.split(' ').map(Number));
     }
     r.readAsText(f);
-  }
-  else {
+
+
+  } else {
     document.getElementById("btnAttachment").innerHTML = "Cannot Read From This File";
   }
+}
+
+function tableBuilder(data) {
+  console.log(data);
 }
