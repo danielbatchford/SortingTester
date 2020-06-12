@@ -35,13 +35,17 @@ function readFile(evt) {
 
       data = stringData.replace(/\D/g, ' ').replace(/\s\s+/g, ' ').split(' ').map(Number); //Clean up this regex, work with neg numbers
 
-
+      if(data.length <= 1){
+        document.getElementById("btnAttachment").innerHTML = "Data is too short";
+        return;
+      }
       var stringToDisplay = "";
       var maxToDisplay = 15;
 
       for (var i = 0, cap = Math.min(data.length, maxToDisplay); i < cap; i++) {
         stringToDisplay += data[i] + ", ";
       }
+
       if (data.length > maxToDisplay) {
         stringToDisplay += " .....";
       }
@@ -102,20 +106,48 @@ function quickSort(dataOrig, timeStarted) {
   var data = dataOrig.slice();
 
   console.log(data);
-  internalQuickSort(0,data.length);
+  internalQuickSort(data,0,data.length-1);
 
   console.log(data);
   return timeFormat(performance.now() - timeStarted);
 }
 
-function internalQuickSort(data, low, high){
-  if(low < high){
-    partIndex = partition(data, low, high);
-
-    internalQuickSort(data, low, partIndex-1);
-    internalQuickSort(data, partIndex+1,high);
+function internalQuickSort(origdata, low, high){
+  var data = origdata.slice();
+  var index;
+  if(data.length > 1){
+    index = qsPartition(data.slice(),low,high);
   }
+  if(left < index - 1){
+    internalQuickSort(data, low, index-1)
+  }
+  if(index < right){
+    internalQuickSort(data, index, high);
+  }
+  return data;
 } //Not done yet
+
+function qsPartition(data,low,high){
+  var pivot = data[Math.floor((low+high))/2];
+  i = low;
+  j = high;
+
+  while (i<=j){
+    while(data[i]<pivot){
+        i++;
+    }
+    while(data[j] > pivot){
+      j--;
+    }
+    if(i<=j){
+      temp = data[i];
+      data[i] = data[j];
+      data[j] = temp;
+    }
+
+  }
+  return i;
+}
 
 function insertionSort(dataOrig, timeStarted) {
 var data = dataOrig.slice();
