@@ -1,11 +1,13 @@
+//Show a modal on call.
+function showModal() {
+  document.getElementById('modal').style.display = "block";
+}
+
+//Hides the modal on click outside of modal box
 window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
   }
-}
-
-function showModal() {
-  document.getElementById('modal').style.display = "block";
 }
 
 //Called when clicking visual button. Adds FileReader event listener and clicks hidden html file button
@@ -20,75 +22,83 @@ function fileSelected(input) {
 
 }
 
-//Read From a file and display the interpreted result
+//Read From a file
 function readFile(evt) {
 
-  var f = evt.target.files[0];
-  if (f) {
-    var r = new FileReader();
+  var file = evt.target.files[0];
+  if (file) {
+    var reader = new FileReader();
 
-    r.onload = function(e) {
-      var stringData = e.target.result;
+    reader.onload = function(loadEvent) {
 
-      document.getElementById('readContainer').style.display = "block";
-
-
-      data = stringData.replace(/\D/g, ' ').replace(/\s\s+/g, ' ').split(' ').map(Number); //Clean up this regex, work with neg numbers
+      data = loadEvent.target.result.replace(/[^0-9\-\.]/g, ' ').split(' ').map(Number);
 
       if (data.length <= 1) {
         document.getElementById("btnAttachment").innerHTML = "Data is too short";
         return;
       }
-      var stringToDisplay = "";
-      var maxToDisplay = 15;
-
-      for (var i = 0, cap = Math.min(data.length, maxToDisplay); i < cap; i++) {
-        stringToDisplay += data[i] + ", ";
-      }
-
-      if (data.length > maxToDisplay) {
-        stringToDisplay += " .....";
-      }
-
-      document.getElementById("readResult").innerHTML = stringToDisplay;
-      document.getElementById("fileInfo").innerHTML = "Found " + data.length + " Elements. Your input was interpreted as:";
-      tableBuilder(data);
-      displayResult(data, maxToDisplay);
+      computeAndUpdatePage(data);
     }
-    r.readAsText(f);
-
-
+    reader.readAsText(file);
   } else {
     document.getElementById("btnAttachment").innerHTML = "Cannot Read From This File";
   }
 }
 
+//Display file results, context information and page boxes.
+function computeAndUpdatePage(data) {
+
+  var maxToDisplay = 30;
+
+  //Show the read container
+  document.getElementById('readContainer').style.display = "block";
+
+  //"Found n results tooltip"
+  document.getElementById("fileInfo").innerHTML = "Found " + data.length + " Elements. Your input was interpreted as:";
+
+  //Display interpreted Results
+  document.getElementById("readResult").innerHTML = displayResult(data, maxToDisplay);
+
+  //Show the table
+  document.getElementById('tableContainer').style.display = "block";
+
+  //Build the table
+  tableBuilder(data);
+
+  //Show the output box
+  document.getElementById("outputPreviewContainer").style.display = "block";
+  //Show contents of the output box.
+  document.getElementById("outputPreview").innerHTML = displayResult(data.sort(function(a, b) {
+    return a - b;
+  }), maxToDisplay);
+
+}
+
+
 function tableBuilder(data) {
 
-  document.getElementById('tableContainer').style.display = "block";
-  //document.getElementById("table").rows[1].cells[3].innerHTML = quickSort(data, performance.now());
+  document.getElementById("table").rows[1].cells[3].innerHTML = quickSort(data, performance.now());
   document.getElementById("table").rows[2].cells[3].innerHTML = mergeSort(data, performance.now());
   document.getElementById("table").rows[3].cells[3].innerHTML = bubbleSort(data, performance.now());
   document.getElementById("table").rows[4].cells[3].innerHTML = selectionSort(data, performance.now());
   document.getElementById("table").rows[5].cells[3].innerHTML = insertionSort(data, performance.now());
-
-
 }
 
+//Display a result from an integer array, in a formatted shortened string.
 function displayResult(data, maxToDisplay) {
-  console.log("Called");
-  document.getElementById("outputPreviewContainer").style.display = "block";
 
-  var outputData = data.sort();
-  var s = "";
-  for (var i = 0, max = Math.min(outputData.length, maxToDisplay); i < max; i++) {
-    s += outputData[i] + " ";
+  var outputString = "";
+  for (var i = 0, max = Math.min(data.length, maxToDisplay); i < max; i++) {
+    outputString += data[i] + ", ";
   }
 
-  if(outputData.length > maxToDisplay) s+=" .....";
-  document.getElementById("outputResult").innerHTML = s;
+  if (data.length > maxToDisplay) outputString += " .....";
+
+  return outputString;
+
 }
 
+//Format time into a string, in either nanoseconds, milliseconds or seconds.
 function timeFormat(input) {
   if (input > 100) {
     return (input / 1000).toFixed(1) + " s";
@@ -98,6 +108,14 @@ function timeFormat(input) {
   }
   return (input * 1000).toFixed(1) + " ns";
 }
+
+
+//------------------------------------------
+//The Below Code contains implemented sorting functions (Note that only time taken is returned, as opposed to a sorted array)
+//------------------------------------------
+
+//ADD IN COMMENTS FOR SORT AND HELPER METHODS
+
 
 function bubbleSort(dataOrig, timeStarted) {
   var data = dataOrig.slice();
@@ -121,27 +139,27 @@ function bubbleSort(dataOrig, timeStarted) {
 function quickSort(dataOrig, timeStarted) {
   var data = dataOrig.slice();
 
-  console.log(data);
   internalQuickSort(data, 0, data.length - 1);
 
-  console.log(data);
   return timeFormat(performance.now() - timeStarted);
 }
 
-function internalQuickSort(origdata, low, high) {
-  var data = origdata.slice();
+//This function is needed to support recursion on the main timing quicksort function
+
+function internalQuickSort(data, low, high) {
+
   var index;
   if (data.length > 1) {
-    index = qsPartition(data.slice(), low, high);
+    index = qsPartition(data, low, high);
   }
-  if (left < index - 1) {
+  if (low < index - 1) {
     internalQuickSort(data, low, index - 1)
   }
-  if (index < right) {
+  if (index < high) {
     internalQuickSort(data, index, high);
   }
   return data;
-} //Not done yet
+}
 
 function qsPartition(data, low, high) {
   var pivot = data[Math.floor((low + high)) / 2];
@@ -156,9 +174,9 @@ function qsPartition(data, low, high) {
       j--;
     }
     if (i <= j) {
-      temp = data[i];
-      data[i] = data[j];
-      data[j] = temp;
+      swapElements(data, i, j);
+      i++;
+      j--;
     }
 
   }
@@ -182,9 +200,41 @@ function insertionSort(dataOrig, timeStarted) {
   return timeFormat(performance.now() - timeStarted);
 }
 
+
+
 function mergeSort(dataOrig, timeStarted) {
   var data = dataOrig.slice();
+
+  internalMergeSort(data);
   return timeFormat(performance.now() - timeStarted);
+}
+
+function internalMergeSort(data){
+  if(data.length <=1) return data;
+
+  var center = Math.floor(data.length / 2);
+
+  return merge(internalMergeSort(data.slice(0,center)),data.slice(center));
+}
+
+
+function merge(left,right){
+  var result = [];
+  var li = 0;
+  var ri = 0;
+
+  while(li < left.length && ri < right.length){
+    if (left[li] < right[ri]){
+      result.push(left[li]);
+      li++;
+    }
+    else{
+      result.push(right[ri]);
+      ri++;
+    }
+  }
+
+  return result.concat(left.slice(li)).concat(right.slice(ri));
 }
 
 function selectionSort(dataOrig, timeStarted) {
@@ -200,12 +250,17 @@ function selectionSort(dataOrig, timeStarted) {
       }
     }
     if (min != i) {
-      var tmp = data[i];
-      data[i] = data[min];
-      data[min] = tmp;
+      swapElements(data, i, min);
     }
 
   }
 
   return timeFormat(performance.now() - timeStarted);
+}
+
+//Helper function to swap two elements in an array (passed by reference)
+function swapElements(data, a, b) {
+  temp = data[a];
+  data[a] = data[b];
+  data[b] = temp;
 }
