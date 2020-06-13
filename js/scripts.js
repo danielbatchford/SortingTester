@@ -19,7 +19,6 @@ function openAttachment() {
 //Displays the file input on button
 function fileSelected(input) {
   document.getElementById('btnAttachment').innerHTML = input.files[0].name;
-
 }
 
 //Read From a file
@@ -31,9 +30,7 @@ function readFile(evt) {
 
     reader.onload = function(loadEvent) {
       var stringData = loadEvent.target.result;
-      var data = stringData.replace(/[^0-9\-\.]/g, ' ').split(' ').map(Number); //HERE CAST TO INTEGER ARRAY
-
-      console.log(typeof data);
+      var data = stringData.replace(/[^0-9\-\.]/g, ' ').split(' ').map(Number); //HERE, REGEX IS INCLUDING LOTS OF UNNECCESSARY ZEROS. TRY REMOVING DUPE SPACES!!!
 
       if (data.length <= 1) {
         document.getElementById("btnAttachment").innerHTML = "Data is too short";
@@ -88,16 +85,11 @@ function tableBuilder(data) {
   document.getElementById("table").rows[7].cells[3].innerHTML = countingSort(data, performance.now())[0];
 
   console.log("Before");
+  console.log(data);
   console.log("QS");
     console.log(quickSort(data)[1]);
   console.log("MS");
   console.log(mergeSort(data)[1]);
-  console.log("BS");
-  console.log(bubbleSort(data)[1]);
-  console.log("SS");
-  console.log(selectionSort(data)[1]);
-  console.log("IS");
-  console.log(insertionSort(data)[1]);
   console.log("HS");
   console.log(heapSort(data)[1]);
   console.log("CS");
@@ -131,11 +123,11 @@ function timeFormat(input) {
 
 
 //------------------------------------------
-//The Below Code contains implemented sorting functions (Note that only time taken is returned, as opposed to a sorted array)
+//The Below Code contains implemented sorting functions
 //------------------------------------------
 
 //ADD IN COMMENTS FOR SORT AND HELPER METHODS some weird reference thing going on here since heap and counting sort added
-//move timestarted to inside functions
+//move timestarted to outside functions, make them only return data
 
 
 function countingSort(dataOrig, timeStarted) { //not implemented yet
@@ -167,10 +159,10 @@ function bubbleSort(dataOrig, timeStarted) {
   return [timeFormat(performance.now() - timeStarted),data];
 }
 
-function quickSort(dataOrig, timeStarted) { //DOESNT CURRENTLY WORK
+function quickSort(dataOrig, timeStarted) {
   var data = dataOrig.slice();
 
-  internalQuickSort(data, 0, data.length - 1);
+  data = internalQuickSort(data, 0, data.length - 1);
 
   return [timeFormat(performance.now() - timeStarted),data];
 }
@@ -182,18 +174,19 @@ function internalQuickSort(data, low, high) {
   var index;
   if (data.length > 1) {
     index = qsPartition(data, low, high);
-  }
+
   if (low < index - 1) {
     internalQuickSort(data, low, index - 1)
   }
   if (index < high) {
     internalQuickSort(data, index, high);
   }
+}
   return data;
 }
 
 function qsPartition(data, low, high) {
-  var pivot = data[Math.floor((low + high)) / 2];
+  var pivot = data[Math.floor((low + high) / 2)];
   i = low;
   j = high;
 
@@ -209,7 +202,6 @@ function qsPartition(data, low, high) {
       i++;
       j--;
     }
-
   }
   return i;
 }
