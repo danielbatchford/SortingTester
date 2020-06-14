@@ -99,29 +99,28 @@ function tableBuilder(data) {
   table.rows[2].cells[3].innerHTML = timeFormat(performance.now() - start);
 
   start = performance.now();
-  bubbleSort(data.slice());
+  heapSort(data.slice());
   table.rows[3].cells[3].innerHTML = timeFormat(performance.now() - start);
 
   start = performance.now();
-  selectionSort(data.slice());
+  bubbleSort(data.slice());
   table.rows[4].cells[3].innerHTML = timeFormat(performance.now() - start);
 
   start = performance.now();
-  insertionSort(data.slice());
+  selectionSort(data.slice());
   table.rows[5].cells[3].innerHTML = timeFormat(performance.now() - start);
 
   start = performance.now();
-  heapSort(data.slice());
+  insertionSort(data.slice());
   table.rows[6].cells[3].innerHTML = timeFormat(performance.now() - start);
 
   //Check to see if counting sort is applicable on the dataset
   if (!data.some((v) => v < 0)) {
-    let bounds = countingSortBounds(data.slice());
     start = performance.now();
-    countingSort(data.slice(), bounds[0], bounds[1]);
+    countingSort(data.slice());
     table.rows[7].cells[3].innerHTML = timeFormat(performance.now() - start);
   } else {
-    table.rows[7].cells[3].innerHTML = "N/A";
+    table.rows[7].cells[3].innerHTML = "N/A - Pos Int Only";
   }
 
   console.log("Before");
@@ -141,8 +140,7 @@ function tableBuilder(data) {
 
   if (!data.some((v) => v < 0)) {
     console.log("CS");
-    let bounds = countingSortBounds(data.slice());
-    console.log(countingSort(data.slice(), bounds[0], bounds[1]));
+    console.log(countingSort(data.slice()));
   }
 }
 
@@ -171,12 +169,10 @@ function timeFormat(input) {
 
 //ADD IN COMMENTS FOR SORT AND HELPER METHODS
 
-function countingSortBounds(data) {
-  return [Math.min.apply(null, data), Math.max.apply(null, data)];
-}
-
 //mention that implementation only works on integers >= 0
-function countingSort(data, min, max) {
+function countingSort(data) {
+  let min = Math.min.apply(null, data);
+  let max = Math.max.apply(null, data);
   let j = 0,
     length = data.length,
     count = [];
@@ -201,37 +197,55 @@ function countingSort(data, min, max) {
 }
 
 function heapSort(data) {
-  let dataLength = data.length;
+  data = buildMaxHeap(data);
 
-  for (let i = Math.floor(dataLength / 2); i > -0; i--) {
-    heapify(data, i);
-  }
-  for (let i = dataLength - 1; i > 0; i--) {
-    swapElements(data, 0, i);
-    dataLength--;
-    heapify(data, dataLength, i);
-  }
+  last = data.length - 1;
 
+  while (last > 0) {
+    swapElements(data, 0, last);
+
+    data = heapify(data, 0, last);
+
+    last--;
+  }
   return data;
 }
 
-function heapify(data, dataLength, i) {
-  let max = i,
-    l = 2 * i + 1,
+function heapify(data, i, max) {
+  var index, l, r;
+
+  while (i < max) {
+    index = i;
+
+    l = 2 * i + 1;
     r = 2 * i + 2;
 
-  if (l < dataLength && data[l] > data[max]) {
-    max = l;
-  }
+    if (l < max && data[l] > data[index]) {
+      index = l;
+    }
+    if (r < max && data[r] > data[index]) {
+      index = r;
+    }
+    if (index == i) {
+      return data;
+    }
 
-  if (r < dataLength && data[r] > data[max]) {
-    max = r;
+    swapElements(data, i, index);
+    i = index;
   }
+  return data;
+}
 
-  if (max != i) {
-    swapElements(data, i, max);
-    heapify(data, dataLength, max);
+function buildMaxHeap(data) {
+  var i;
+  i = data.length / 2 - 1;
+  i = Math.floor(i);
+
+  while (i >= 0) {
+    data = heapify(data, i, data.length);
+    i -= 1;
   }
+  return data;
 }
 
 function bubbleSort(data) {

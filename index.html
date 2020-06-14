@@ -45,9 +45,32 @@
   </head>
 
   <body>
+    <!-- About Modal -->
+    <div id="modal" class="w3-modal">
+      <div class="w3-modal-content w3-card-4 w3-padding-large w3-animate-top">
+        <p class="w3-center w3-large">About</p>
+        <p>
+          This website is a project to compare various sorting algorithms. While
+          some algorithms have better average efficiency, this doesn't
+          neccessarily imply efficiency when data is not distributed
+          uniformingly randomly. Hence, by simulating uploaded data from a file,
+          we can easily view the times taken to process the list with the most
+          popular sorting algorithms used today.
+        </p>
+        <p class="w3-center w3-large">How To Use</p>
+        <p>
+          Upload the data in a .txt format. Currently, only positive integers
+          are supported. Don't worry if the uploaded data isn't in a nice
+          format, as this is filtered before results are produced.
+        </p>
+      </div>
+    </div>
+
+    <!--Main Box-->
     <div class="w3-padding-large">
-      <!-- logo -->
-      <div class="w3-card-4 w3-round-xlarge w3-padding-64 w3-animate-top">
+      <div class="w3-card w3-padding-64 w3-animate-top">
+        <!-- GitHub Logo -->
+
         <div class="w3-display-topleft w3-padding-large">
           <a
             class="fa fa-github"
@@ -56,6 +79,8 @@
             href="https://github.com/danielbatchford/SortingTester"
           ></a>
         </div>
+
+        <!--Help Logo-->
         <div class="w3-display-topright w3-padding-large">
           <a
             class="fa fa-question-circle"
@@ -64,31 +89,6 @@
             onclick="showModal()"
           ></a>
         </div>
-
-        <!-- The Modal -->
-        <div id="modal" class="w3-modal">
-          <div
-            class="w3-modal-content w3-card-4 w3-round-xlarge w3-padding-large w3-animate-top"
-          >
-            <p class="w3-center w3-large">About</p>
-            <p>
-              This website is a project to compare various sorting algorithms.
-              While some algorithms have better average efficiency, this doesn't
-              neccessarily imply efficiency when data is not distributed
-              uniformingly randomly. Hence, by simulating uploaded data from a
-              file, we can easily view the times taken to process the list with
-              the most popular sorting algorithms used today.
-            </p>
-            <p class="w3-center w3-large">How To Use</p>
-            <p>
-              Upload the data in a .txt format. Currently, only positive
-              integers are supported. Don't worry if the uploaded data isn't in
-              a nice format, as this is filtered before results are produced.
-            </p>
-          </div>
-        </div>
-
-        <!-- Main Display -->
 
         <div class="w3-padding-xlarge w3-center">
           <h1 class="w3-jumbo">Sorting Algorithm Tester</h1>
@@ -114,9 +114,10 @@
       </div>
     </div>
 
+    <!--Read Preview Box-->
     <div class="w3-padding-large">
       <div
-        class="w3-card-4 w3-round-xlarge w3-animate-bottom w3-center w3-padding-large"
+        class="w3-card-4 w3-animate-bottom w3-center w3-padding-large"
         style="display: none;"
         id="readContainer"
       >
@@ -126,10 +127,10 @@
       </div>
     </div>
 
-    <!--Results Table -->
+    <!--Results Table Box -->
     <div class="w3-padding-large">
       <div
-        class="w3-card-4 w3-round-xlarge w3-animate-bottom w3-padding-large"
+        class="w3-card-4 w3-animate-bottom w3-padding-large"
         style="display: none;"
         id="tableContainer"
       >
@@ -149,43 +150,43 @@
           <tbody>
             <tr>
               <td>Quick Sort</td>
-              <td>nlogn</td>
+              <td>O(nlogn)</td>
               <td>No</td>
               <td>Calculating</td>
             </tr>
             <tr>
               <td>Merge Sort</td>
-              <td>nlogn</td>
-              <td>Yes</td>
-              <td>Calculating</td>
-            </tr>
-            <tr>
-              <td>Bubble Sort</td>
-              <td>n^2</td>
-              <td>Yes</td>
-              <td>Calculating</td>
-            </tr>
-            <tr>
-              <td>Selection Sort</td>
-              <td>n^2</td>
-              <td>No</td>
-              <td>Calculating</td>
-            </tr>
-            <tr>
-              <td>Insertion Sort</td>
-              <td>n^2</td>
+              <td>O(nlogn)</td>
               <td>Yes</td>
               <td>Calculating</td>
             </tr>
             <tr>
               <td>Heap Sort</td>
-              <td>nlogn</td>
+              <td>O(nlogn)</td>
               <td>No</td>
               <td>Calculating</td>
             </tr>
             <tr>
+              <td>Bubble Sort</td>
+              <td>O(n<sup>2</sup>)</td>
+              <td>Yes</td>
+              <td>Calculating</td>
+            </tr>
+            <tr>
+              <td>Selection Sort</td>
+              <td>O(n<sup>2</sup>)</td>
+              <td>No</td>
+              <td>Calculating</td>
+            </tr>
+            <tr>
+              <td>Insertion Sort</td>
+              <td>O(n<sup>2</sup>)</td>
+              <td>Yes</td>
+              <td>Calculating</td>
+            </tr>
+            <tr>
               <td>Counting Sort</td>
-              <td>n+k</td>
+              <td>O(n+k)</td>
               <td>Yes</td>
               <td>
                 Calculating
@@ -196,10 +197,10 @@
       </div>
     </div>
 
-    <!-- Sorted Output -->
+    <!-- Sorted Output Box-->
     <div class="w3-padding-large">
       <div
-        class="w3-card-4 w3-round-xlarge w3-animate-bottom w3-center w3-padding-large"
+        class="w3-card-4 w3-animate-bottom w3-center w3-padding-large"
         style="display: none;"
         id="outputPreviewContainer"
       >
@@ -209,14 +210,9 @@
       </div>
     </div>
 
-    <br />
-
     <!-- Footer -->
     <footer class="w3-container w3-animate-opacity w3-black w3-center">
       <p>2020 - Daniel Batchford</p>
     </footer>
-
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
