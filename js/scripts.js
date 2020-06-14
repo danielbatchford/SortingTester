@@ -32,22 +32,25 @@ function readFile(evt) {
     reader.onload = function (loadEvent) {
       let stringData = loadEvent.target.result;
 
+      //Formatting string data into an array of numbers. Removes n spaces, replacing with 1, then splits by this space into a number array.
       let data = stringData
         .replace(/[^0-9\-\.]/g, " ")
         .replace(/\s\s+/g, " ")
         .split(" ")
         .map(Number);
 
+      //Ensures that data is of sufficient length
       if (data.length <= 1) {
         document.getElementById("btnAttachment").innerHTML =
           "Data is too short";
         return;
       }
-
+      //Call the update script
       computeAndUpdatePage(data);
     };
     reader.readAsText(file);
   } else {
+    //Reading file failed. Button is updated to display this error.
     document.getElementById("btnAttachment").innerHTML =
       "Cannot Read From This File";
   }
@@ -87,6 +90,7 @@ function computeAndUpdatePage(data) {
   tableBuilder(data);
 }
 
+//Calls various sorting functions and records their performance, then updates table elements.
 function tableBuilder(data) {
   table = document.getElementById("table");
 
@@ -114,15 +118,16 @@ function tableBuilder(data) {
   insertionSort(data.slice());
   table.rows[6].cells[3].innerHTML = timeFormat(performance.now() - start);
 
-  //Check to see if counting sort is applicable on the dataset
+  //Check to see if counting sort is applicable on the dataset (pos integers only)
   if (!data.some((v) => v < 0)) {
     start = performance.now();
     countingSort(data.slice());
     table.rows[7].cells[3].innerHTML = timeFormat(performance.now() - start);
   } else {
-    table.rows[7].cells[3].innerHTML = "N/A - Pos Int Only";
+    table.rows[7].cells[3].innerHTML = "N/A - Positive Int Only";
   }
 
+  /*
   console.log("Before");
   console.log(data);
   console.log("QS");
@@ -137,15 +142,20 @@ function tableBuilder(data) {
   console.log(insertionSort(data.slice()));
   console.log("HS");
   console.log(heapSort(data.slice()));
+  
 
   if (!data.some((v) => v < 0)) {
     console.log("CS");
     console.log(countingSort(data.slice()));
-  }
+  }*/
 }
 
 //Display a result from an object array, in a formatted shortened string.
-function displayResult(data, maxToDisplay) {
+function displayResult(
+  data,
+
+  maxToDisplay
+) {
   let outputString = "";
   for (let i = 0, max = Math.min(data.length, maxToDisplay); i < max; i++) {
     outputString += data[i] + ", ";
@@ -167,9 +177,6 @@ function timeFormat(input) {
   return (input * 1000).toFixed(1) + " ns";
 }
 
-//ADD IN COMMENTS FOR SORT AND HELPER METHODS
-
-//mention that implementation only works on integers >= 0
 function countingSort(data) {
   let min = Math.min.apply(null, data);
   let max = Math.max.apply(null, data);
@@ -264,6 +271,7 @@ function bubbleSort(data) {
   return data;
 }
 
+//To allow shorter method signature for above function call
 function quickSort(data) {
   return quickSortInternal(data, 0, data.length);
 }
@@ -271,7 +279,7 @@ function quickSort(data) {
 function quickSortInternal(data, low, high) {
   let index;
   if (data.length > 1) {
-    index = qsPartition(data, low, high);
+    index = quickSortPartition(data, low, high);
 
     if (low < index - 1) {
       quickSortInternal(data, low, index - 1);
@@ -283,7 +291,8 @@ function quickSortInternal(data, low, high) {
   return data;
 }
 
-function qsPartition(data, low, high) {
+//Simulates rotating elements around a pivot based on element value
+function quickSortPartition(data, low, high) {
   let pivot = data[Math.floor((low + high) / 2)];
   i = low;
   j = high;
@@ -326,6 +335,7 @@ function mergeSort(data) {
   return merge(mergeSort(data.slice(0, center)), mergeSort(data.slice(center)));
 }
 
+//Merges two lists together in an ordered fashion
 function merge(left, right) {
   let result = [],
     li = 0,
@@ -361,7 +371,7 @@ function selectionSort(data) {
   return data;
 }
 
-//Helper function to swap two elements in an array (passed by reference)
+//Helper function to swap two elements in an array  by reference
 function swapElements(data, a, b) {
   temp = data[a];
   data[a] = data[b];
