@@ -149,7 +149,7 @@ function bubbleSort(dataOrig, timeStarted) {
     for (var i = 0; i < length - 1; i++) {
       if (data[i] > data[i + 1]) {
         var tmp = data[i];
-        data[i] = data[i + 1];
+        data[i] = data[i + 1];// use swap function
         data[i + 1] = tmp;
         swapped = true;
       }
