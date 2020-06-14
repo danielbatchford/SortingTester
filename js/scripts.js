@@ -4,7 +4,7 @@ function showModal() {
 }
 
 //Hides the modal on click outside of modal box
-window.onclick = function(event) {
+window.onclick = function (event) {
   if (event.target == modal) {
     modal.style.display = "none";
   }
@@ -28,9 +28,9 @@ function readFile(evt) {
   if (file) {
     var reader = new FileReader();
 
-    reader.onload = function(loadEvent) {
+    reader.onload = function (loadEvent) {
       var stringData = loadEvent.target.result;
-      var data = stringData.replace(/[^0-9\-\.]/g, ' ').split(' ').map(Number); //HERE, REGEX IS INCLUDING LOTS OF UNNECCESSARY ZEROS. TRY REMOVING DUPE SPACES!!!
+      var data = stringData.replace(/[^0-9\-\.]/g, ' ').replace(/\s\s+/g, ' ').split(' ').map(Number);
 
       if (data.length <= 1) {
         document.getElementById("btnAttachment").innerHTML = "Data is too short";
@@ -67,7 +67,7 @@ function computeAndUpdatePage(data) {
   //Show the output box
   document.getElementById("outputPreviewContainer").style.display = "block";
   //Show contents of the output box.
-  document.getElementById("outputPreview").innerHTML = displayResult(data.sort(function(a, b) {
+  document.getElementById("outputPreview").innerHTML = displayResult(data.sort(function (a, b) {
     return a - b;
   }), maxToDisplay);
 
@@ -76,27 +76,57 @@ function computeAndUpdatePage(data) {
 
 function tableBuilder(data) {
 
-  document.getElementById("table").rows[1].cells[3].innerHTML = quickSort(data, performance.now())[0];
-  document.getElementById("table").rows[2].cells[3].innerHTML = mergeSort(data, performance.now())[0];
-  document.getElementById("table").rows[3].cells[3].innerHTML = bubbleSort(data, performance.now())[0];
-  document.getElementById("table").rows[4].cells[3].innerHTML = selectionSort(data, performance.now())[0];
-  document.getElementById("table").rows[5].cells[3].innerHTML = insertionSort(data, performance.now())[0];
-  document.getElementById("table").rows[6].cells[3].innerHTML = heapSort(data, performance.now())[0];
-  document.getElementById("table").rows[7].cells[3].innerHTML = countingSort(data, performance.now())[0];
+  table = document.getElementById('table');
 
+  start = performance.now();
+  quickSort(data.slice(),0,data.length);
+  table.rows[1].cells[3].innerHTML = timeFormat(performance.now() - start);
+
+  start = performance.now();
+  mergeSort(data.slice());
+  table.rows[2].cells[3].innerHTML = timeFormat(performance.now() - start);
+
+  start = performance.now();
+  bubbleSort(data.slice());
+  table.rows[3].cells[3].innerHTML = timeFormat(performance.now() - start);
+
+  start = performance.now();
+  selectionSort(data.slice());
+  table.rows[4].cells[3].innerHTML = timeFormat(performance.now() - start);
+
+  start = performance.now();
+  insertionSort(data.slice());
+  table.rows[5].cells[3].innerHTML = timeFormat(performance.now() - start);
+
+  start = performance.now();
+  heapSort(data.slice());
+  table.rows[6].cells[3].innerHTML = timeFormat(performance.now() - start);
+
+  start = performance.now();
+  countingSort(data.slice());
+  table.rows[7].cells[3].innerHTML = timeFormat(performance.now() - start);
+
+
+  /*
   console.log("Before");
   console.log(data);
   console.log("QS");
-    console.log(quickSort(data)[1]);
+  console.log(quickSort(data.slice()));
   console.log("MS");
-  console.log(mergeSort(data)[1]);
+  console.log(mergeSort(data.slice()));
+  console.log("BS");
+  console.log(bubbleSort(data.slice()));
+  console.log("SS");
+  console.log(selectionSort(data.slice()));
+  console.log("IS");
+  console.log(insertionSort(data.slice()));
   console.log("HS");
-  console.log(heapSort(data)[1]);
+  console.log(heapSort(data.slice()));
   console.log("CS");
-  console.log(countingSort(data)[1]);
+  console.log(countingSort(data.slice()));*/
 }
 
-//Display a result from an integer array, in a formatted shortened string.
+//Display a result from an object array, in a formatted shortened string.
 function displayResult(data, maxToDisplay) {
 
   var outputString = "";
@@ -112,7 +142,7 @@ function displayResult(data, maxToDisplay) {
 
 //Format time into a string, in either nanoseconds, milliseconds or seconds.
 function timeFormat(input) {
-  if (input > 100) {
+  if (input > 1000) {
     return (input / 1000).toFixed(1) + " s";
   }
   if (input > 1) {
@@ -126,62 +156,53 @@ function timeFormat(input) {
 //The Below Code contains implemented sorting functions
 //------------------------------------------
 
-//ADD IN COMMENTS FOR SORT AND HELPER METHODS some weird reference thing going on here since heap and counting sort added
-//move timestarted to outside functions, make them only return data
+//ADD IN COMMENTS FOR SORT AND HELPER METHODS
 
 
-function countingSort(dataOrig, timeStarted) { //not implemented yet
-  var data = dataOrig.slice();
-  return [timeFormat(performance.now() - timeStarted),data];
+function countingSort(data) { //not implemented yet
+
+  return data;
 }
 
-function heapSort(dataOrig, timeStarted) { //not implemented yet
-  var data = dataOrig.slice();
-  return [timeFormat(performance.now() - timeStarted),data];
+function heapSort(data) { //not implemented yet
+
+  return data;
 }
 
-function bubbleSort(dataOrig, timeStarted) {
-  var data = dataOrig.slice();
+function bubbleSort(data) {
+
   var length = data.length;
   var swapped = true;
   while (swapped) {
     swapped = false;
     for (var i = 0; i < length - 1; i++) {
       if (data[i] > data[i + 1]) {
-        var tmp = data[i];
-        data[i] = data[i + 1];// use swap function
-        data[i + 1] = tmp;
+        swapElements(data, i, i + 1);
         swapped = true;
       }
     }
   }
 
-  return [timeFormat(performance.now() - timeStarted),data];
+  return data;
 }
 
-function quickSort(dataOrig, timeStarted) {
-  var data = dataOrig.slice();
-
-  data = internalQuickSort(data, 0, data.length - 1);
-
-  return [timeFormat(performance.now() - timeStarted),data];
+function quickSort(data){
+  return quickSortInternal(data,0,data.length);
 }
 
-//This function is needed to support recursion on the main timing quicksort function
 
-function internalQuickSort(data, low, high) {
-
+function quickSortInternal(data, low, high) {
   var index;
   if (data.length > 1) {
     index = qsPartition(data, low, high);
 
-  if (low < index - 1) {
-    internalQuickSort(data, low, index - 1)
+    if (low < index - 1) {
+      quickSortInternal(data, low, index - 1)
+    }
+    if (index < high) {
+      quickSortInternal(data, index, high);
+    }
   }
-  if (index < high) {
-    internalQuickSort(data, index, high);
-  }
-}
   return data;
 }
 
@@ -206,11 +227,9 @@ function qsPartition(data, low, high) {
   return i;
 }
 
-function insertionSort(dataOrig, timeStarted) {
-  var data = dataOrig.slice();
-  var length = data.length;
+function insertionSort(data) {
 
-  for (var i = 1; i < length; i++) {
+  for (var i = 1, length = data.length; i < length; i++) {
     var key = data[i];
     var j = i - 1;
     while (j >= 0 && data[j] > key) {
@@ -220,32 +239,23 @@ function insertionSort(dataOrig, timeStarted) {
     data[j + 1] = key;
   }
 
-  return [timeFormat(performance.now() - timeStarted),data];
+  return data;
 }
 
 
-
-function mergeSort(dataOrig, timeStarted) { //currently not working
-  var data = dataOrig.slice();
-
-  data = internalMergeSort(data);
-
-  return [timeFormat(performance.now() - timeStarted),data];
-}
-
-function internalMergeSort(data) {
+function mergeSort(data) {
   if (data.length <= 1) return data;
 
   var center = Math.floor(data.length / 2);
 
-  return merge(internalMergeSort(data.slice(0, center)), data.slice(center));
+  return merge(mergeSort(data.slice(0, center)), mergeSort(data.slice(center)));
 }
 
 
+
 function merge(left, right) {
-  var result = [];
-  var li = 0;
-  var ri = 0;
+  var result = [], li = 0, ri = 0;
+
 
   while (li < left.length && ri < right.length) {
     if (left[li] < right[ri]) {
@@ -256,12 +266,11 @@ function merge(left, right) {
       ri++;
     }
   }
-
   return result.concat(left.slice(li)).concat(right.slice(ri));
 }
 
-function selectionSort(dataOrig, timeStarted) {
-  var data = dataOrig.slice();
+function selectionSort(data) {
+
 
   var length = data.length;
 
@@ -278,7 +287,7 @@ function selectionSort(dataOrig, timeStarted) {
 
   }
 
-  return [timeFormat(performance.now() - timeStarted),data];
+  return data;
 }
 
 //Helper function to swap two elements in an array (passed by reference)
